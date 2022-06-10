@@ -31,6 +31,7 @@ fn set_sockopts(sock: RawFd) {
 fn prepare_socket(sock: &UdpSocket, host: &String, ttl: u32) {
     let raw_fd: RawFd = sock.as_raw_fd();
     sock.connect(&host).expect("Error connecting");
+    println!("Connecting {}", host);
     set_sockopts(raw_fd);
     sock.set_ttl(ttl + 1)
         .expect(format!("Failed to set ttl={} on socket", ttl).as_str());
@@ -136,9 +137,10 @@ fn peer_ip(sock: &UdpSocket) -> String {
 }
 
 fn traceroute(hostname: String, hops: u32) {
+    println!("Trying {}", hostname);
     let mut trace_complete = false;
     let mut ip_addr: Option<String> = None;
-    for ttl in 0..hops {
+    for ttl in 1..hops {
         let port = 33435 + ttl;
         println!("Trying TTL: {}", ttl);
         let mut success = false;
@@ -186,7 +188,7 @@ fn traceroute(hostname: String, hops: u32) {
 
 #[cfg_attr(target_os = "android", ndk_glue::main(backtrace = "on"))]
 fn main() {
-    let hostname = String::from("www.facebook.com");
+    let hostname = String::from("172.217.194.147");
     let hops: u32 = 255;
     traceroute(hostname, hops);
 }

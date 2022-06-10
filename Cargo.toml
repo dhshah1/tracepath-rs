@@ -5,9 +5,16 @@ authors = ["Peter Malmgren <ptmalmgren@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["lib", "cdylib"]
 
 [dependencies]
 clap = "3.0.0-beta.2"
-nix = { git = "https://github.com/pmalmgren/nix", branch = "tracepath-enabled" }
-# nix = { path = "../nix" }
 libc = "0.2"
+nix = { git = "https://github.com/dhshah1/nix", branch = "tracepath-enabled" }
+
+[target.'cfg(target_os = "android")'.dependencies]
+ndk-glue = "0.6.2" # Substitute this with the latest ndk-glue version you wish to use
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.INTERNET"
